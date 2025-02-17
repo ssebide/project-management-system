@@ -68,7 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         Optional<Project> optionalProject = projectRepository.findById(projectId);
         if(optionalProject.isEmpty()){
-            throw new Exception("Project Not Found")
+            throw new Exception("Project Not Found");
         }
         return optionalProject.get();
     }
@@ -121,6 +121,12 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = getProjectById(projectId);
 
         return project.getChat();
+    }
+
+    @Override
+    public List<Project> searchProject(String keyword, User user) throws Exception {
+
+        return projectRepository.findByNameContainingAndTeamContains(keyword, user);
     }
 
     
