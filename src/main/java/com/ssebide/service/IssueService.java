@@ -4,17 +4,18 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ssebide.modal.Issue;
+import com.ssebide.modal.User;
 import com.ssebide.request.IssueRequest;
 
 public interface IssueService {
 
-    Optional<Issue> getIssueById(long issueId) throws Exception;
+    Issue getIssueById(long issueId) throws Exception;
 
     List<Issue> getIssueByProjectId(long projectId) throws Exception;
 
-    Issue creatIssue(IssueRequest issue, long userId) throws Exception;
+    Issue createIssue(IssueRequest issue, User user) throws Exception;
 
-    String deleteIssue(long issueId, long userId) throws Exception;
+    void deleteIssue(long issueId, long userId) throws Exception;
 
     Issue addUserToIssue(long issueId, long userId) throws Exception;
 

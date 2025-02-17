@@ -33,7 +33,7 @@ public class Issue {
 
     @ManyToOne
     @JoinColumn(name = "assigned_user_id")
-    private User assigned;
+    private User assignee;
 
     @JsonIgnore
     @ManyToOne

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssebide.modal.Issue;
+import com.ssebide.modal.Project;
+import com.ssebide.modal.User;
 import com.ssebide.repository.IssueRepository;
 import com.ssebide.request.IssueRequest;
 
@@ -16,43 +18,67 @@ public class IssueServiceImpl implements IssueService {
     @Autowired
     private IssueRepository issueRepository;
 
+    @Autowired
+    private ProjectService projectService;
+
+    @Autowired
+    private UserService userService;
+
     @Override
-    public Optional<Issue> getIssueById(long issueId) throws Exception {
+    public Issue getIssueById(long issueId) throws Exception {
         Optional<Issue> issue = issueRepository.findById(issueId);
         if (issue.isPresent()) {
-            return issue;
+            return issue.get();
         }
         throw new Exception("No issues found with issue id" + issueId);
     }
 
     @Override
     public List<Issue> getIssueByProjectId(long projectId) throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getIssueByProjectId'");
+        return issueRepository.findByProjectId(projectId);
     }
 
     @Override
-    public Issue creatIssue(IssueRequest issue, long userId) throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'creatIssue'");
+    public Issue createIssue(IssueRequest issueRequest, User user) throws Exception {
+
+        Project project = projectService.getProjectById(issueRequest.getProjectId());
+
+        Issue issue = new Issue();
+        issue.setTitle(issueRequest.getTitle());
+        issue.setDescription(issueRequest.getDescription());
+        issue.setStatus(issueRequest.getStatus());
+        issue.setProjectId(issue.getProjectId());
+        issue.setPriority(issueRequest.getPriority());
+        issue.setDueDate(issueRequest.getDueDate());
+
+        issue.setProject(project);
+
+        return issueRepository.save(issue);
     }
 
     @Override
-    public String deleteIssue(long issueId, long userId) throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteIssue'");
+    public void deleteIssue(long issueId, long userId) throws Exception {
+        getIssueById(issueId);
+
+        issueRepository.deleteById(issueId);
     }
 
     @Override
     public Issue addUserToIssue(long issueId, long userId) throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addUserToIssue'");
+        User user = userService.findUserById(userId);
+
+        Issue issue = getIssueById(issueId);
+        issue.setAssignee(user);
+        return issueRepository.save(issue);
     }
 
     @Override
     public Issue updateIssueStatus(long issueId, String status) throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateIssueStatus'");
+        Issue issue = getIssueById(issueId);
+
+        issue.setStatus(status);
+
+        return issueRepository.save(issue);
     }
 
 }
