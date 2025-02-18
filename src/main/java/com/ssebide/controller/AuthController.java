@@ -20,6 +20,7 @@ import com.ssebide.repository.UserRepository;
 import com.ssebide.request.LoginRequest;
 import com.ssebide.response.AuthResponse;
 import com.ssebide.service.CustomUserDetailsImpl;
+import com.ssebide.service.SubscriptionService;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,6 +34,9 @@ public class AuthController {
 
     @Autowired
     private CustomUserDetailsImpl customUserDetailsImpl;
+
+    @Autowired
+    private SubscriptionService subscriptionService;
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws Exception {
@@ -48,6 +52,8 @@ public class AuthController {
         createdUser.setFullName(user.getFullName());
 
         User savedUser = userRepository.save(createdUser);
+
+        subscriptionService.createSubscription(savedUser);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
