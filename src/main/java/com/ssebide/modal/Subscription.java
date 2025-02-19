@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Subscription {
     
-    @Id
+    @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 
     private Long Id;
